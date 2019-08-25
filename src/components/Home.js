@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import Registration from './auth/Registration';
 import Login from './auth/Login';
 
@@ -7,6 +8,7 @@ export default class Home extends Component {
     super(props)
 
     this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this)
+    this.handleLogoutClick = this.handleLogoutClick.bind(this)
   }
 
   handleSuccessfulAuth(data) {
@@ -19,7 +21,11 @@ export default class Home extends Component {
   }
 
   handleLogoutClick(){
-    this.props.handleLogout()
+    axios.delete('http://localhost:3001', { withCredentials: true }).then(response => {
+      this.props.handleLogout()
+    }).catch(error => {
+      console.log("logout error", error)
+    })
   }
 
   render() {
@@ -27,7 +33,7 @@ export default class Home extends Component {
       <div>
         <h1>Home</h1>
         <h1>Status: {this.props.loggedInStatus}</h1>
-        <button onClick={() => this.handleLogoutClick}>Logout</button>
+        <button onClick={() => this.handleLogoutClick()}>Logout</button>
         <Registration handleSuccessfulAuth={this.handleSuccessfulAuth}/>
         <Login handleSuccessfulAuth={this.handleSuccessfulAuth}/>
       </div>
