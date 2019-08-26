@@ -21,7 +21,7 @@ export default class Home extends Component {
   }
 
   handleLogoutClick(){
-    axios.delete('http://localhost:3001', { withCredentials: true }).then(response => {
+    axios.delete('http://localhost:3001/logout', { withCredentials: true }).then(response => {
       this.props.handleLogout()
     }).catch(error => {
       console.log("logout error", error)
@@ -31,7 +31,6 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <h1>Home</h1>
         <h1>Status: {this.props.loggedInStatus}</h1>
         <button onClick={() => this.handleLogoutClick()}>Logout</button>
         <Registration handleSuccessfulAuth={this.handleSuccessfulAuth}/>

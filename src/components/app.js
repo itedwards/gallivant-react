@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import axios from 'axios'
-import Home from './Home';
+import RegistrationPage from './auth/RegistrationPage';
 import Dashboard from './Dashboard';
+import Landing from './Landing'
 
 export default class App extends Component {
   constructor(){
@@ -67,7 +68,14 @@ export default class App extends Component {
               exact 
               path={"/"} 
               render={props => (
-                <Home {... props } handleLogin={this.handleLogin} handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
+                <Landing {... props } handleLogin={this.handleLogin} handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
+              )} 
+            />
+            <Route 
+              exact 
+              path={"/register"} 
+              render={props => (
+                <RegistrationPage {... props } handleLogin={this.handleLogin} handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
               )} 
             />
             <Route 

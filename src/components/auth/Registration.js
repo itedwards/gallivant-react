@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
+
+
 export default class Registration extends Component {
   constructor(props){
     super(props)
@@ -16,6 +22,15 @@ export default class Registration extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleSuccessfulAuth(data) {
+    // update parent app component
+    this.props.handleLogin(data)
+
+    // redirect - props from router available allow to move to new page
+    this.props.history.push('/dashboard')
+    
   }
 
   handleChange(event){
@@ -42,7 +57,7 @@ export default class Registration extends Component {
     ).then(response => {
       // handle registration response
       if (response.data.status === 'created'){
-        this.props.handleSuccessfulAuth(response.data)
+        this.handleSuccessfulAuth(response.data)
       }
       // TODO handle errors
     }).catch(error => {
@@ -54,49 +69,95 @@ export default class Registration extends Component {
   }
 
   render() {
+    const {styles} = this.props
     return (
-      <form onSubmit={this.handleSubmit} >
-        <input 
-          name="firstname" 
-          placeholder="First Name" 
-          value={this.state.firstname} 
-          onChange={this.handleChange} 
-          required 
-        />
-        <input 
-          name="lastname" 
-          placeholder="Last Name" 
-          value={this.state.lastname} 
-          onChange={this.handleChange} 
-          required 
-        />
-        <input 
-          type="email" 
-          name="email" 
-          placeholder="Email" 
-          value={this.state.email} 
-          onChange={this.handleChange} 
-          required 
-        />
-        <input 
-          type="password" 
-          name="password" 
-          placeholder="Password" 
-          value={this.state.password} 
-          onChange={this.handleChange} 
-          required 
-        />
-        <input 
-          type="password" 
-          name="password_confirmation" 
-          placeholder="Confirm Password" 
-          value={this.state.password_confirmation} 
-          onChange={this.handleChange} 
-          required 
-        />
-
-        <button type="submit">Register</button>
-      </form>
+      <form className={styles.form} onSubmit={this.handleSubmit} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="fname"
+                name="firstname"
+                variant="outlined"
+                required
+                fullWidth
+                id="firstname"
+                label="First Name"
+                autoFocus
+                value={this.state.firstname} 
+                onChange={this.handleChange} 
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="lastname"
+                label="Last Name"
+                name="lastname"
+                autoComplete="lname"
+                value={this.state.lastname} 
+                onChange={this.handleChange} 
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={this.state.email} 
+                onChange={this.handleChange} 
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={this.state.password} 
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password_confirmation"
+                label="Confirm Password"
+                type="password"
+                autoComplete="current-password"
+                value={this.state.password_confirmation} 
+                onChange={this.handleChange}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={styles.submit}
+          >
+            Sign Up
+          </Button>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link href="/" variant="body2">
+                Already have an account? Sign in
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
     )
   }
 }
