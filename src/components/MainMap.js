@@ -23,7 +23,7 @@ export default class MainMap extends Component {
     const {lat, lng} = this.state;
 
     return(
-      <div style={{width: `100%`, height: `625px`}}>
+      <div style={{width: `100%`, height: `635px`}}>
         <GallivantMap
           center={{
             lat: lat,
