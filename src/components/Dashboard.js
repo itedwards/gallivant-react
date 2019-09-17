@@ -1,17 +1,30 @@
 import React from 'react'
 import Navbar from './Navbar';
-import MainMap from './MainMap'
+import MainMap from './map/MainMap'
 import Autocomplete from './Autocomplete'
+import CardList from './CardList'
 
 import '../style/dashboard.scss'
+import axios from 'axios';
 
 export default class Dashboard extends React.Component {
   constructor(){
     super()
 
     this.state = {
-      place: {}
+      place: {},
+      pins: {}
     };
+  }
+
+  fetchPins(xMin, xMax, yMin, yMax) {
+    axios.get(`http://localhost:3001/pins?min_lng=${xMin}&max_lng=${xMax}&min_lat=${yMin}&max_lat=${yMax}`)
+      .then(response => {
+        this.setState({pins : response.data.pins})
+      })
+      .catch(error => {
+        console.log("pin load error", error)
+      })
   }
 
   showPlaceDetails(place) {
@@ -46,7 +59,7 @@ export default class Dashboard extends React.Component {
 
               <div className="tab-content mx-2" id="myTabContent">
                 <div className="tab-pane fade show active" id="pins" role="tabpanel" aria-labelledby="pins-tab">
-                  Test
+                  <CardList pins={this.state.pins} />
                 </div>
                 <div className="tab-pane fade" id="addnew" role="tabpanel" aria-labelledby="addnew-tab">
                   <Autocomplete onPlaceChanged={this.showPlaceDetails.bind(this)} />
@@ -58,7 +71,7 @@ export default class Dashboard extends React.Component {
           </nav>
 
           <section role="main" className="col-md-8 ml-sm-auto col-lg-9 px-0" >
-            <MainMap />
+            <MainMap fetchPins={this.fetchPins.bind(this)} pins={this.state.pins} />
           </section>
         </div>
       </div>

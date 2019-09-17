@@ -42,6 +42,33 @@ class Autocomplete extends React.Component {
     })
   }
 
+  handleSubmit(event){
+    const { place } = this.state
+
+    axios.post('http://localhost:3001/pins', 
+      // pass in pin obj to api
+      {
+        pin: {
+          lat: place.geometry.location.lat,
+          long: place.geometry.location.long,
+          title: this.state.title,
+          description: this.state.description
+        }
+      }
+    ).then(response => {
+      // handle registration response
+      if (response.data.created){
+        console.log("pin created", response.data.pin)
+      }
+      // TODO handle errors
+    }).catch(error => {
+      // handle registration errors if any
+      console.log("login error", error)
+    })
+
+    event.preventDefault()
+  }
+
   render() {
     return (
       <div className="my-2">
@@ -73,7 +100,7 @@ class Autocomplete extends React.Component {
             required
           >
           </textarea>
-          <button type="submit" class="form-control btn btn-primary mb-2">Add Pin</button>
+          <button type="submit" className="form-control btn btn-primary mb-2">Add Pin</button>
         </form>
       </div>
       

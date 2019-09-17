@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import axios from 'axios'
 import Home from './Home';
 import Dashboard from './Dashboard';
+import MainMap from './map/MainMap';
 
 export default class App extends Component {
   constructor(){
@@ -74,7 +75,7 @@ export default class App extends Component {
               exact 
               path={"/dashboard"} 
               render={props => (
-                <Dashboard {... props } loggedInStatus={this.state.loggedInStatus} />
+                <MainMap {... props } loggedInStatus={this.state.loggedInStatus} />
               )} 
             />
           </Switch>
