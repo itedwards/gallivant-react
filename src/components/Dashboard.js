@@ -1,140 +1,82 @@
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MainMap from './MainMap'
+import React from 'react'
+import Navbar from './Navbar';
+import MainMap from './map/MainMap'
+import Autocomplete from './Autocomplete'
+import CardList from './CardList'
 
-const drawerWidth = 480;
+import '../style/dashboard.scss'
+import axios from 'axios';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  },
-  content: {
-    flexGrow: 1,
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-}));
+export default class Dashboard extends React.Component {
+  constructor(){
+    super()
 
-export default function Dashboard(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  function handleDrawerOpen() {
-    setOpen(true);
+    this.state = {
+      place: {},
+      pins: {}
+    };
   }
 
-  function handleDrawerClose() {
-    setOpen(false);
+  fetchPins(xMin, xMax, yMin, yMax) {
+    axios.get(`http://localhost:3001/pins?min_lng=${xMin}&max_lng=${xMax}&min_lat=${yMin}&max_lat=${yMax}`)
+      .then(response => {
+        this.setState({pins : response.data.pins})
+      })
+      .catch(error => {
+        console.log("pin load error", error)
+      })
   }
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h4" noWrap>
-            Gallivant
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
+  showPlaceDetails(place) {
+    this.setState({ place });
+  }
+  
+  render() {
+    const AddressDetails = props => {
+      return (
+          <div>
+            <pre>{JSON.stringify(props.place, null, 2)}</pre>
+          </div>
+      )
+    };
+
+    return (
+      <main>
+        <Navbar />
+        <div className="container-fluid">
+        <div className="row">
+          <nav className="col-md-3 d-none d-md-block bg-light sidebar">
+            <div className="sidebar-sticky">
+
+              <ul className="nav nav-tabs mx-2" id="myTab" role="tablist">
+                <li className="nav-item">
+                  <a className="nav-link active" id="pins-tab" data-toggle="tab" href="#pins" role="tab" aria-controls="pins" aria-selected="true">Pins</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" id="addnew-tab" data-toggle="tab" href="#addnew" role="tab" aria-controls="addnew" aria-selected="false">Add New</a>
+                </li>
+              </ul>
+
+              <div className="tab-content mx-2" id="myTabContent">
+                <div className="tab-pane fade show active" id="pins" role="tabpanel" aria-labelledby="pins-tab">
+                  <CardList pins={this.state.pins} />
+                </div>
+                <div className="tab-pane fade" id="addnew" role="tabpanel" aria-labelledby="addnew-tab">
+                  <Autocomplete onPlaceChanged={this.showPlaceDetails.bind(this)} />
+                  <AddressDetails place={this.state.place} />
+                </div>
+              </div>
+                
+            </div>
+          </nav>
+
+          <section role="main" className="col-md-8 ml-sm-auto col-lg-9 px-0" >
+            <MainMap fetchPins={this.fetchPins.bind(this)} pins={this.state.pins} />
+          </section>
         </div>
-        <Divider />
-       
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-
-        <MainMap />
+      </div>
       </main>
-    </div>
-  );
+    )
+    }
 }
 

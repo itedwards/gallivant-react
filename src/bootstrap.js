@@ -8,7 +8,7 @@ import reducers from "./reducers";
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
-import "./style/main.scss";
+import './style/main.scss'
 
 function main() {
   ReactDOM.render(

@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 
+import '../../style/auth.scss'
+
 export default class Login extends Component {
   constructor(props){
     super(props)
@@ -69,64 +71,50 @@ export default class Login extends Component {
   render() {
     const {styles} = this.props
     return (
-      <div className={styles.paper}>
-        <Avatar className={styles.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={styles.form} onSubmit={this.handleSubmit} noValidate>
-          <TextField
+      <div class="signin-div">
+        <form class="form-signin" onSubmit={this.handleSubmit}>
+          <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />
+          <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+          <label for="inputEmail" class="sr-only">Email address</label>
+          <input 
             type="email" 
-            name="email"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="email"
-            label="Email Address"
-            autoComplete="email"
+            id="inputEmail"
+            class="form-control"
+            name="email" 
+            placeholder="Email" 
             value={this.state.email} 
             onChange={this.handleChange} 
-            autoFocus
             required 
+            autofocus
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input 
+            type="password" 
+            id="inputPassword" 
+            class="form-control" 
+            placeholder="Password"
+            type="password" 
+            name="password" 
             value={this.state.password} 
             onChange={this.handleChange} 
-            required 
+            required
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={styles.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+
+          <div class="checkbox mb-3">
+            <label>
+              <input type="checkbox" value="remember-me" /> Remember me 
+            </label>
+          </div>
+
+          <a href="/registration">Sign up</a>
+
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          <p class="mt-5 mb-3 text-muted">© 2019</p>
         </form>
       </div>
+
     )
   }
 }
