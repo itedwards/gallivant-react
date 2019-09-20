@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
 
 import '../../style/auth.scss'
 
@@ -15,6 +24,16 @@ export default class Login extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this)
+  }
+
+  handleSuccessfulAuth(data) {
+    // update parent app component
+    this.props.handleLogin(data)
+
+    // redirect - props from router available allow to move to new page
+    this.props.history.push('/dashboard')
+    
   }
 
   handleChange(event){
@@ -38,7 +57,7 @@ export default class Login extends Component {
     ).then(response => {
       // handle registration response
       if (response.data.logged_in){
-        this.props.handleSuccessfulAuth(response.data)
+        this.handleSuccessfulAuth(response.data)
       }
       // TODO handle errors
     }).catch(error => {
@@ -50,6 +69,7 @@ export default class Login extends Component {
   }
 
   render() {
+    const {styles} = this.props
     return (
       <div class="signin-div">
         <form class="form-signin" onSubmit={this.handleSubmit}>
@@ -94,7 +114,7 @@ export default class Login extends Component {
           <p class="mt-5 mb-3 text-muted">© 2019</p>
         </form>
       </div>
-      
+
     )
   }
 }
