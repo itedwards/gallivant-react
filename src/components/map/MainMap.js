@@ -3,6 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps'
 import Navbar from '../Navbar';
 import PlaceMarker from './PlaceMarker';
 import axios from 'axios';
+import SideBar from '../SideBar';
 
 const GallivantMap = withGoogleMap(props => (
   <GoogleMap
@@ -79,17 +80,14 @@ export default class MainMap extends Component {
   getMapBounds() {
     var mapBounds = this.map.getBounds()
 
-    var xMapBounds = mapBounds.ja
-    var yMapBounds = mapBounds.na
+    this.xMapBounds.min = mapBounds.getSouthWest().lng()
+    this.xMapBounds.max = mapBounds.getNorthEast().lng()
 
-    this.xMapBounds.min = xMapBounds.g
-    this.xMapBounds.max = xMapBounds.h
-
-    this.yMapBounds.min = yMapBounds.g
-    this.yMapBounds.max = yMapBounds.h
+    this.yMapBounds.min = mapBounds.getSouthWest().lat()
+    this.yMapBounds.max = mapBounds.getNorthEast().lat()
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     this.setState({ pins: [] })
   }
 
@@ -99,36 +97,41 @@ export default class MainMap extends Component {
     return(
       <main>
         <Navbar />
-        <div style={{width: `100%`, height: `635px`}}>
-          <GallivantMap
-            onMapMounted={this.handleMapMounted.bind(this)}
-            handleMapChanged={this.handleMapChanged.bind(this)}
-            handleMapFullyLoaded={this.handleMapFullyLoaded.bind(this)}
+        <div className="container-fluid">
 
-            center={{
-              lat: lat,
-              lng: lng
-            }}
-            zoom={this.zoom}
-            
-            containerElement={
-              <div style={{ height: `100%` }} />
-            }
-            mapElement={
-              <div style={{ height: `100%` }} />
-            }
+          <div class="row">
 
-            pins={pins}
-          />
+            <SideBar pins={this.state.pins} />
+
+            <section role="main" className="col-md-8 ml-sm-auto col-lg-9 px-0" >
+              <div style={{width: `100%`, height: `635px`}}>
+
+                <GallivantMap
+                  onMapMounted={this.handleMapMounted.bind(this)}
+                  handleMapChanged={this.handleMapChanged.bind(this)}
+                  handleMapFullyLoaded={this.handleMapFullyLoaded.bind(this)}
+
+                  center={{
+                    lat: lat,
+                    lng: lng
+                  }}
+                  zoom={this.zoom}
+                  
+                  containerElement={
+                    <div style={{ height: `100%` }} />
+                  }
+                  mapElement={
+                    <div style={{ height: `100%` }} />
+                  }
+
+                  pins={pins}
+                />
+
+              </div>
+            </section>
+          </div>
+          
         </div>
-        <ul>
-          <li>lng: {lng}</li>
-          <li>lat: {lat}</li>
-          <li>xMapBounds.min: {this.xMapBounds.min}</li>
-          <li>xMapBounds.max: {this.xMapBounds.max}</li>
-          <li>yMapBounds.min: {this.yMapBounds.min}</li>
-          <li>yMapBounds.max: {this.yMapBounds.max}</li>
-        </ul>
       </main>
       
     );
