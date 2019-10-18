@@ -99,7 +99,7 @@ export default class MainMap extends Component {
         <Navbar />
         <div className="container-fluid">
 
-          <div class="row">
+          <div className="row">
 
             <SideBar pins={this.state.pins} />
 

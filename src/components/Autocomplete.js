@@ -1,6 +1,7 @@
 /* global google */
 
 import React from "react";
+import axios from 'axios'
 
 class Autocomplete extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Autocomplete extends React.Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -43,28 +45,31 @@ class Autocomplete extends React.Component {
   }
 
   handleSubmit(event){
-    const { place } = this.state
+    console.log(this.state.place.getPlace())
+    
+    // axios.post('http://localhost:3001/pins', 
+      
+    //   // pass in pin obj to api
+    //   {
+    //     pin: {
+    //       lat: place.geometry.location.lat,
+    //       long: place.geometry.location.long,
+    //       title: this.state.title,
+    //       description: this.state.description
+    //     }
+    //   },
+    //   { withCredentials: true }
 
-    axios.post('http://localhost:3001/pins', 
-      // pass in pin obj to api
-      {
-        pin: {
-          lat: place.geometry.location.lat,
-          long: place.geometry.location.long,
-          title: this.state.title,
-          description: this.state.description
-        }
-      }
-    ).then(response => {
-      // handle registration response
-      if (response.data.created){
-        console.log("pin created", response.data.pin)
-      }
-      // TODO handle errors
-    }).catch(error => {
-      // handle registration errors if any
-      console.log("login error", error)
-    })
+    // ).then(response => {
+    //   // handle registration response
+    //   if (response.data.created){
+    //     console.log("pin created", response.data.pin)
+    //   }
+    //   // TODO handle errors
+    // }).catch(error => {
+    //   // handle registration errors if any
+    //   console.log("login error", error)
+    // })
 
     event.preventDefault()
   }
@@ -73,7 +78,7 @@ class Autocomplete extends React.Component {
     return (
       <div className="my-2">
         <h3>Add New Pin</h3>
-        <form className="my-4">
+        <form className="my-4" onSubmit={this.handleSubmit}>
           <input
             ref={this.autocompleteInput}
             className="form-control mb-2"
